@@ -1,0 +1,15 @@
+id: troubleshooting-recent-query-text
+title: Recent query text, truncated
+category: troubleshooting
+tags:
+- substr
+prompt: |
+  Write a query against sys_query_history that returns query_id and the first 20 characters
+  of query_text for the 10 most recent queries.
+checks:
+- type: answer_executes
+  min_columns: 2
+  max_rows: 10
+  max_text_length:
+    column_index: 1
+    max: 20

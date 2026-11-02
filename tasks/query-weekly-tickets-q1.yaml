@@ -1,0 +1,18 @@
+id: query-weekly-tickets-q1
+title: Weekly tickets sold in Q1 2008
+category: query
+tags:
+- dates
+prompt: |
+  Return the total number of tickets sold (sum of qtysold in bench.sales) per week for
+  sales from 2008-01-01 up to (not including) 2008-04-01, based on saletime. Weeks start on
+  Monday. Return: week_start (a date), tickets, ordered by week_start.
+checks:
+- type: result_match
+  ordered: true
+  reference_sql: |
+    SELECT DATE_TRUNC('week', saletime)::date AS week_start, SUM(qtysold) AS tickets
+    FROM bench.sales
+    WHERE saletime >= '2008-01-01' AND saletime < '2008-04-01'
+    GROUP BY 1
+    ORDER BY 1

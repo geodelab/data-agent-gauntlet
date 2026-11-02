@@ -1,0 +1,37 @@
+# PostgreSQL habits the harness looks for in SQL the agent sends to Redshift.
+- name: string_agg
+  pattern: \bstring_agg\s*\(
+  description: PostgreSQL aggregate; Redshift uses LISTAGG ... WITHIN GROUP
+- name: create_index
+  pattern: \bcreate\s+(unique\s+)?index\b
+  description: Redshift has no secondary indexes; use sort and distribution keys
+- name: serial
+  pattern: \b(big|small)?serial\b
+  description: Not supported; use IDENTITY(seed, step)
+- name: text_column
+  pattern: \b[a-z_][a-z0-9_]*\s+text\s*(,|\)|\bnot\b|\bnull\b|\bdefault\b)
+  description: TEXT becomes VARCHAR(256)
+- name: stl_stv_views
+  pattern: \b(stl|stv)_[a-z_]+
+  description: Provisioned-only system tables; on Serverless use SYS_ views
+- name: pg_catalog
+  pattern: \bpg_catalog\.|\bpg_(stat_activity|indexes|tables)\b
+  description: PostgreSQL catalog habits; prefer SVV_/SYS_ views
+- name: substr
+  pattern: \bsubstr\s*\(
+  description: Leader-node-only on some sources; SUBSTRING is safe
+- name: returning
+  pattern: \breturning\b
+  description: INSERT ... RETURNING is not supported
+- name: on_conflict
+  pattern: \bon\s+conflict\b
+  description: Not supported; use MERGE
+- name: lateral
+  pattern: \blateral\b
+  description: LATERAL joins are not supported
+- name: distinct_on
+  pattern: \bdistinct\s+on\s*\(
+  description: Not supported; use ROW_NUMBER or QUALIFY
+- name: generate_series
+  pattern: \bgenerate_series\s*\(
+  description: Leader-node-only; fails with table data

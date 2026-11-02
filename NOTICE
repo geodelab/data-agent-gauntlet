@@ -1,0 +1,7 @@
+aws-data-agent-bench
+Copyright 2026 Ganesh Kumar P
+
+This product is licensed under the Apache License, Version 2.0.
+It uses the public Amazon Redshift TICKIT sample dataset, loaded at runtime from
+s3://redshift-downloads/tickit/. The dataset is not redistributed in this repository.
+This project is not affiliated with or endorsed by Amazon Web Services.

@@ -1,0 +1,24 @@
+id: query-pivot-quarters
+title: Tickets sold by category group and quarter
+category: query
+tags:
+- pivot
+prompt: |
+  Return total tickets sold (sum of qtysold) in 2008 for each category group (catgroup),
+  with one row per catgroup and one column per quarter of saletime:
+  catgroup, q1, q2, q3, q4. Use 0 when a quarter has no sales. Order by catgroup.
+checks:
+- type: result_match
+  ordered: true
+  reference_sql: |
+    SELECT c.catgroup,
+           SUM(CASE WHEN DATE_PART(quarter, s.saletime) = 1 THEN s.qtysold ELSE 0 END) AS q1,
+           SUM(CASE WHEN DATE_PART(quarter, s.saletime) = 2 THEN s.qtysold ELSE 0 END) AS q2,
+           SUM(CASE WHEN DATE_PART(quarter, s.saletime) = 3 THEN s.qtysold ELSE 0 END) AS q3,
+           SUM(CASE WHEN DATE_PART(quarter, s.saletime) = 4 THEN s.qtysold ELSE 0 END) AS q4
+    FROM bench.sales s
+    JOIN bench.event e ON s.eventid = e.eventid
+    JOIN bench.category c ON e.catid = c.catid
+    WHERE s.saletime >= '2008-01-01' AND s.saletime < '2009-01-01'
+    GROUP BY c.catgroup
+    ORDER BY c.catgroup

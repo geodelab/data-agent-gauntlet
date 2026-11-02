@@ -1,0 +1,23 @@
+id: optimization-auto-refresh-mv
+title: Materialized view that refreshes itself
+category: optimization
+tags:
+- materialized_view
+prompt: |
+  Create a materialized view bench_work.mv_daily_revenue with one row per sale date
+  (the date part of saletime in bench.sales) and the columns sale_date, revenue
+  (sum of pricepaid) and tickets_sold (sum of qtysold). It must refresh automatically
+  when bench.sales changes.
+checks:
+- type: scalar_equals
+  name: auto refresh on
+  expected: 1
+  sql: |
+    SELECT COUNT(*) FROM svv_mv_info
+    WHERE schema = 'bench_work' AND name = 'mv_daily_revenue' AND autorefresh = 't'
+- type: sql_match
+  name: view contents
+  sql: SELECT sale_date, revenue, tickets_sold FROM bench_work.mv_daily_revenue
+  reference_sql: |
+    SELECT TRUNC(saletime) AS sale_date, SUM(pricepaid), SUM(qtysold)
+    FROM bench.sales GROUP BY 1

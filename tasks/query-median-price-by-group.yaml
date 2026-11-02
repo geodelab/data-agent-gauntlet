@@ -1,0 +1,16 @@
+id: query-median-price-by-group
+title: Median ticket price by category group
+category: query
+tags:
+- aggregate
+prompt: |
+  Return the median price paid (pricepaid in bench.sales) for each category group
+  (catgroup in bench.category). Join through bench.event. Return: catgroup, median_price.
+checks:
+- type: result_match
+  reference_sql: |
+    SELECT c.catgroup, MEDIAN(s.pricepaid)
+    FROM bench.sales s
+    JOIN bench.event e ON s.eventid = e.eventid
+    JOIN bench.category c ON e.catid = c.catid
+    GROUP BY c.catgroup

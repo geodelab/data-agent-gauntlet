@@ -1,0 +1,11 @@
+id: troubleshooting-running-queries
+title: Show queries that are running right now
+category: troubleshooting
+tags:
+- stv_views
+prompt: |
+  Write a query that shows the queries currently running on this workgroup, with the
+  query id, user id, start time and how long each has been running so far.
+checks:
+- type: answer_executes
+  min_columns: 4

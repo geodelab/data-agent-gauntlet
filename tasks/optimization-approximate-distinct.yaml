@@ -1,0 +1,18 @@
+id: optimization-approximate-distinct
+title: Fast approximate distinct counts
+category: optimization
+tags:
+- approximate
+prompt: |
+  For each eventid in bench.sales, return eventid and the number of distinct buyers.
+  The exact number is not required: use Redshift's built-in approximate method so the
+  query is as cheap as possible.
+checks:
+- type: answer_contains
+  name: uses approximate counting
+  pattern: approximate\s+count|hll
+- type: result_match
+  name: within 5% of exact
+  rel_tol: 0.05
+  abs_tol: 1
+  reference_sql: SELECT eventid, COUNT(DISTINCT buyerid) FROM bench.sales GROUP BY eventid

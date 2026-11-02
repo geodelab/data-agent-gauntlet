@@ -1,0 +1,18 @@
+id: schema-long-notes
+title: Store notes longer than 256 characters
+category: schema
+tags:
+- text_type
+prompt: |
+  Create a table bench_work.ticket_notes with columns note_id (integer) and note (free text
+  up to 1000 characters). Insert one row with note_id 1 and a note made of the letter 'x'
+  repeated 600 times.
+checks:
+- type: scalar_equals
+  name: 600-character note stored
+  sql: SELECT MAX(LEN(note)) FROM bench_work.ticket_notes WHERE note_id = 1
+  expected: 600
+- type: scalar_equals
+  name: exactly one row
+  sql: SELECT COUNT(*) FROM bench_work.ticket_notes
+  expected: 1

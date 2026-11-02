@@ -1,0 +1,15 @@
+id: loading-unload-parquet
+title: Export query results to S3 as Parquet
+category: loading
+tags:
+- unload
+prompt: |
+  Export total revenue (sum of pricepaid) per eventid for sales in 2008 (by saletime) to
+  Amazon S3 in Parquet format under this prefix:
+  {s3_output}unload_revenue/
+  Use the warehouse's default IAM role.
+checks:
+- type: s3_objects
+  prefix: '{s3_output}unload_revenue/'
+  suffix: .parquet
+  min_count: 1

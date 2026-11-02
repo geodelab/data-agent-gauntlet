@@ -1,0 +1,18 @@
+id: query-listagg-venues
+title: Comma-separated venue names per city
+category: query
+tags:
+- string_agg
+prompt: |
+  For every city in bench.venue, return the city and a single string listing all of its
+  venue names (every venue row, including duplicates), sorted alphabetically and separated
+  by a comma followed by a space (", "). Return one row per city: venuecity, venues.
+  Order the result by venuecity.
+checks:
+- type: result_match
+  ordered: true
+  reference_sql: |
+    SELECT venuecity, LISTAGG(venuename, ', ') WITHIN GROUP (ORDER BY venuename)
+    FROM bench.venue
+    GROUP BY venuecity
+    ORDER BY venuecity

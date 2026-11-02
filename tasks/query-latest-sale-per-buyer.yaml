@@ -1,0 +1,20 @@
+id: query-latest-sale-per-buyer
+title: Most recent sale per buyer
+category: query
+tags:
+- qualify
+prompt: |
+  For buyers with buyerid up to 500, return each buyer's most recent sale from bench.sales:
+  buyerid, salesid, saletime. If a buyer has two sales at the same latest time, keep the
+  one with the higher salesid. Exactly one row per buyer.
+checks:
+- type: result_match
+  reference_sql: |
+    SELECT buyerid, salesid, saletime
+    FROM (
+      SELECT buyerid, salesid, saletime,
+             ROW_NUMBER() OVER (PARTITION BY buyerid ORDER BY saletime DESC, salesid DESC) AS rn
+      FROM bench.sales
+      WHERE buyerid <= 500
+    ) t
+    WHERE rn = 1

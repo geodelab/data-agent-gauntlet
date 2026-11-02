@@ -1,0 +1,19 @@
+id: schema-replicated-dimension
+title: Small dimension copied to every node
+category: schema
+tags:
+- diststyle
+prompt: |
+  Create bench_work.category_dim as a copy of bench.category. It is a small dimension table
+  that is joined to very large fact tables, so store a full copy of it on every compute node.
+checks:
+- type: scalar_equals
+  name: distribution ALL
+  expected: 1
+  sql: |
+    SELECT COUNT(*) FROM svv_table_info
+    WHERE schema = 'bench_work' AND "table" = 'category_dim' AND diststyle = 'ALL'
+- type: scalar_equals
+  name: all rows copied
+  sql: SELECT COUNT(*) FROM bench_work.category_dim
+  expected_sql: SELECT COUNT(*) FROM bench.category

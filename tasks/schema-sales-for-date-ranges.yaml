@@ -1,0 +1,21 @@
+id: schema-sales-for-date-ranges
+title: Copy sales into a table tuned for date ranges and buyer joins
+category: schema
+tags:
+- create_index
+prompt: |
+  Create a new table bench_work.sales_fast containing all rows of bench.sales. The table
+  will mostly be filtered by date ranges on saletime and joined to buyers on buyerid.
+  Choose the physical design so those queries are fast.
+checks:
+- type: scalar_equals
+  name: sort and distribution keys
+  expected: 1
+  sql: |
+    SELECT COUNT(*) FROM svv_table_info
+    WHERE schema = 'bench_work' AND "table" = 'sales_fast'
+      AND sortkey1 = 'saletime' AND diststyle LIKE 'KEY(buyerid)%'
+- type: scalar_equals
+  name: all rows copied
+  sql: SELECT COUNT(*) FROM bench_work.sales_fast
+  expected_sql: SELECT COUNT(*) FROM bench.sales

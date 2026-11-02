@@ -1,0 +1,12 @@
+id: troubleshooting-table-design
+title: Inspect table design for a schema
+category: troubleshooting
+tags:
+- pg_catalog
+prompt: |
+  Write a query that shows, for every table in schema bench: the table name, its
+  distribution style, its first sort key column, and its row count. One row per table.
+checks:
+- type: answer_executes
+  min_columns: 4
+  expected_rows_sql: SELECT COUNT(*) FROM svv_table_info WHERE schema = 'bench'

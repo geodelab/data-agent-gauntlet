@@ -1,0 +1,14 @@
+__pycache__/
+*.egg-info/
+.venv/
+.pytest_cache/
+dist/
+build/
+
+# local config and run output
+adab.yaml
+results/
+
+# personal publishing notes, not part of the repo
+_publishing/
+.DS_Store

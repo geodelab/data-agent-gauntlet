@@ -1,0 +1,11 @@
+id: troubleshooting-failed-queries
+title: List failed queries from the last 24 hours
+category: troubleshooting
+tags:
+- stl_views
+prompt: |
+  Write a query that lists queries that failed on this workgroup in the last 24 hours,
+  with at least the query id, start time and error message, most recent first.
+checks:
+- type: answer_executes
+  min_columns: 3

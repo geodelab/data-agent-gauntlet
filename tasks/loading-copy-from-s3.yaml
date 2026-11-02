@@ -1,0 +1,21 @@
+id: loading-copy-from-s3
+title: Load a pipe-delimited file from S3
+category: loading
+tags:
+- copy
+prompt: |
+  Load the file s3://redshift-downloads/tickit/venue_pipe.txt into a new table
+  bench_work.venue_copy with the same columns and types as bench.venue. The file is
+  pipe-delimited ("|") with no header row, and the bucket is in us-east-1. Use the
+  warehouse's default IAM role.
+checks:
+- type: scalar_equals
+  name: row count matches
+  sql: SELECT COUNT(*) FROM bench_work.venue_copy
+  expected_sql: SELECT COUNT(*) FROM bench.venue
+- type: scalar_equals
+  name: rows match source
+  sql: |
+    SELECT COUNT(*) FROM bench_work.venue_copy c
+    JOIN bench.venue v ON c.venueid = v.venueid AND c.venuename = v.venuename
+  expected_sql: SELECT COUNT(*) FROM bench.venue

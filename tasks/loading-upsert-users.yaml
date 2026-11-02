@@ -1,0 +1,25 @@
+id: loading-upsert-users
+title: Upsert changed and new users
+category: loading
+tags:
+- on_conflict
+prompt: |
+  bench_work.users_updates contains changed rows for some existing users and some new users.
+  Upsert it into bench_work.users_target, matching on userid: update username and email for
+  users that already exist, and insert users that don't. Do not create duplicate userids.
+setup_sql: |
+  CREATE TABLE bench_work.users_target AS
+    SELECT userid, username, email FROM bench.users WHERE userid <= 100;
+  CREATE TABLE bench_work.users_updates AS
+    SELECT userid, username, 'new_' || email AS email FROM bench.users WHERE userid BETWEEN 91 AND 105;
+  GRANT ALL ON ALL TABLES IN SCHEMA bench_work TO PUBLIC;
+checks:
+- type: scalar_equals
+  name: upsert result
+  expected: 1
+  sql: |
+    SELECT CASE WHEN COUNT(*) = 105
+                 AND COUNT(DISTINCT userid) = 105
+                 AND SUM(CASE WHEN LEFT(email, 4) = 'new_' THEN 1 ELSE 0 END) = 15
+                THEN 1 ELSE 0 END
+    FROM bench_work.users_target

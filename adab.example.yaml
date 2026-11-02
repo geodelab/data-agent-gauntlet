@@ -1,0 +1,24 @@
+# Example configuration. `adab setup` writes a real adab.yaml for you.
+region: us-east-1
+stack_name: adab
+workgroup: adab-wg
+database: dev
+admin_secret_arn: arn:aws:secretsmanager:us-east-1:123456789012:secret:redshift!adab-ns-adabadmin-XXXX
+output_bucket: adab-outputbucket-xxxxxxxx
+harness_profile: admin        # creates/reset sandbox, reads sys_query_history
+agent_profile: adab-agent     # the limited role the agent runs with
+history_delay_s: 15           # wait for sys_query_history to catch up
+results_dir: results
+
+arms:
+  baseline:   # run with the aws-data-analytics plugin NOT installed
+    command: ["claude", "-p", "{prompt}", "--output-format", "json", "--dangerously-skip-permissions"]
+    timeout_s: 900
+  skills:     # run after installing the plugin
+    command: ["claude", "-p", "{prompt}", "--output-format", "json", "--dangerously-skip-permissions"]
+    timeout_s: 900
+  # kiro-skills:
+  #   command: ["kiro-cli", "chat", "--no-interactive", "--trust-all-tools", "{prompt}"]
+  #   env:
+  #     KIRO_API_KEY: "${KIRO_API_KEY}"
+  #   timeout_s: 900

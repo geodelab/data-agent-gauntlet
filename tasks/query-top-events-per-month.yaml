@@ -1,0 +1,28 @@
+id: query-top-events-per-month
+title: Top 3 events by revenue for each month of 2008
+category: query
+tags:
+- window
+prompt: |
+  Using bench.sales and bench.event, find the top 3 event names by total revenue
+  (sum of pricepaid) for each month of 2008, based on saletime. Group by event name.
+  Break ties by event name ascending. Return: sale_month (1-12), eventname, revenue,
+  ordered by sale_month, then revenue descending, then eventname.
+checks:
+- type: result_match
+  ordered: true
+  reference_sql: |
+    SELECT sale_month, eventname, revenue
+    FROM (
+      SELECT DATE_PART(month, s.saletime) AS sale_month,
+             e.eventname,
+             SUM(s.pricepaid) AS revenue,
+             ROW_NUMBER() OVER (PARTITION BY DATE_PART(month, s.saletime)
+                                ORDER BY SUM(s.pricepaid) DESC, e.eventname) AS rn
+      FROM bench.sales s
+      JOIN bench.event e ON s.eventid = e.eventid
+      WHERE s.saletime >= '2008-01-01' AND s.saletime < '2009-01-01'
+      GROUP BY 1, 2
+    ) t
+    WHERE rn <= 3
+    ORDER BY sale_month, revenue DESC, eventname
