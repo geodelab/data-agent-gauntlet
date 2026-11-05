@@ -45,7 +45,8 @@ def cmd_setup(args) -> int:
     from .backend import RedshiftDataBackend
 
     session = _session(args.profile, args.region)
-    outputs = infra.deploy_stack(session, args.stack_name, args.prefix, args.base_capacity, args.trusted_principal)
+    outputs = infra.deploy_stack(session, args.stack_name, args.prefix, args.base_capacity, args.trusted_principal,
+                                 args.subnet_ids)
     infra.wait_workgroup_available(session, outputs["WorkgroupName"])
     secret = infra.admin_secret_arn(session, outputs["NamespaceName"])
     infra.set_usage_limit(session, outputs["WorkgroupArn"], args.daily_rpu_hours)
@@ -158,6 +159,8 @@ def build_parser() -> argparse.ArgumentParser:
     s.add_argument("--base-capacity", type=int, default=8)
     s.add_argument("--daily-rpu-hours", type=int, default=20, help="Hard daily compute cap for the workgroup.")
     s.add_argument("--trusted-principal", default="", help="Optional ARN allowed to assume the agent role.")
+    s.add_argument("--subnet-ids", default="",
+                   help="Comma-separated subnets in 3 AZs, for accounts without a default VPC.")
     s.add_argument("--agent-profile", default="adab-agent")
     s.add_argument("--config", default=DEFAULT_CONFIG)
     s.set_defaults(func=cmd_setup)

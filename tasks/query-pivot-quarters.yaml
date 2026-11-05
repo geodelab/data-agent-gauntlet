@@ -6,7 +6,8 @@ tags:
 prompt: |
   Return total tickets sold (sum of qtysold) in 2008 for each category group (catgroup),
   with one row per catgroup and one column per quarter of saletime:
-  catgroup, q1, q2, q3, q4. Use 0 when a quarter has no sales. Order by catgroup.
+  catgroup, q1, q2, q3, q4. Only include category groups that had at least one sale in
+  2008. Use 0 when a quarter has no sales. Order by catgroup.
 checks:
 - type: result_match
   ordered: true

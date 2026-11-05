@@ -14,7 +14,8 @@ checks:
   expected: 1
   sql: |
     SELECT COUNT(*) FROM svv_mv_info
-    WHERE schema = 'bench_work' AND name = 'mv_daily_revenue' AND autorefresh = 't'
+    WHERE schema_name = 'bench_work' AND name = 'mv_daily_revenue'
+      AND CAST(autorefresh AS VARCHAR) IN ('t', 'true', '1')
 - type: sql_match
   name: view contents
   sql: SELECT sale_date, revenue, tickets_sold FROM bench_work.mv_daily_revenue

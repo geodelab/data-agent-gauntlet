@@ -22,8 +22,16 @@ Parameters:
       Optional. ARN of the IAM user or role allowed to assume the agent role. Leave empty
       to trust any principal in this account that has sts:AssumeRole permission.
 
+  SubnetIds:
+    Type: CommaDelimitedList
+    Default: ""
+    Description: >-
+      Optional. Subnets in at least 3 Availability Zones for the workgroup. Leave empty to use
+      the default VPC. Accounts without a default VPC must set this.
+
 Conditions:
   HasTrustedPrincipal: !Not [!Equals [!Ref AgentTrustedPrincipalArn, ""]]
+  HasSubnetIds: !Not [!Equals [!Join ["", !Ref SubnetIds], ""]]
 
 Resources:
   OutputBucket:
@@ -94,6 +102,7 @@ Resources:
       NamespaceName: !Sub "${Prefix}-ns"
       BaseCapacity: !Ref BaseCapacity
       PubliclyAccessible: false
+      SubnetIds: !If [HasSubnetIds, !Ref SubnetIds, !Ref "AWS::NoValue"]
 
   AgentRole:
     Type: AWS::IAM::Role

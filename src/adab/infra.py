@@ -32,12 +32,13 @@ def _outputs(cfn, stack_name: str) -> dict[str, str]:
 
 
 def deploy_stack(session, stack_name: str, prefix: str, base_capacity: int, trusted_principal: str,
-                 log=print) -> dict[str, str]:
+                 subnet_ids: str = "", log=print) -> dict[str, str]:
     cfn = session.client("cloudformation")
     params = [
         {"ParameterKey": "Prefix", "ParameterValue": prefix},
         {"ParameterKey": "BaseCapacity", "ParameterValue": str(base_capacity)},
         {"ParameterKey": "AgentTrustedPrincipalArn", "ParameterValue": trusted_principal or ""},
+        {"ParameterKey": "SubnetIds", "ParameterValue": subnet_ids or ""},
     ]
     body = TEMPLATE.read_text()
     try:
