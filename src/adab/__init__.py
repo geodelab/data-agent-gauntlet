@@ -1,4 +1,4 @@
-"""aws-data-agent-bench: benchmark AI coding agents on real AWS data tasks."""
+"""data-agent-gauntlet: benchmark AI coding agents on real AWS data tasks."""
 
 __version__ = "0.1.0"
 

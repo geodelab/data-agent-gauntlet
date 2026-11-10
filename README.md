@@ -1,10 +1,10 @@
-# aws-data-agent-bench
+# data-agent-gauntlet
 
-**An open, repeatable benchmark for AI coding agents doing real data work on AWS.**
+**An open-source decider for which AI agent to trust with your data platform.** Real tasks, graded by the platform, not the agent. It starts with Amazon Redshift on AWS and is built to grow to other warehouses and lakehouses.
 
 AI coding agents such as Claude Code, Kiro, Codex and Cursor now write SQL, design tables and debug warehouses. The [Agent Toolkit for AWS](https://github.com/aws/agent-toolkit-for-aws) gives them skills, like the Amazon Redshift `redshift-guide`, to do that better. But how much better, on which tasks, and where do they still go wrong?
 
-`aws-data-agent-bench` (`adab`) answers that with your own account, your own agent and objective checks:
+`data-agent-gauntlet` (`dagt`) answers that with your own account, your own agent and objective checks:
 
 - **20 tasks on Amazon Redshift Serverless.** Query writing, schema design, loading, troubleshooting and optimization, on the public TICKIT sample dataset.
 - **Pass/fail decided by the warehouse, not by the agent.** Every task has checks the harness runs itself: results compared with a reference query, catalog state, S3 objects.
@@ -12,12 +12,12 @@ AI coding agents such as Claude Code, Kiro, Codex and Cursor now write SQL, desi
 - **It measures the mistakes.** The harness reads `sys_query_history` and records every statement the agent sent: how many failed, and which PostgreSQL habits showed up (`string_agg`, `CREATE INDEX`, `SERIAL`, `stl_` views on Serverless…).
 - **Safe by default.** A disposable sandbox stack, an agent IAM role scoped to one workgroup and one bucket, a daily compute cap, and a one-command teardown.
 
-> Status: v0.1. The harness, tasks and checks are tested offline (`pytest`). Numbers you publish should come from your own runs. Please share them.
+> Status: Day 1 (v0.1). Today: Amazon Redshift Serverless, the harness, tasks and checks (tested offline with `pytest`). Planned, not built: more agents and platforms, cost and token reporting, and a ranked verdict per agent and job. Numbers you publish should come from your own runs. Please share them.
 
 ## How it works
 
 ```
-             ┌──────────── adab run ────────────┐
+             ┌──────────── dagt run ────────────┐
  tasks/*.yaml│ 1. reset bench_work + task setup │      Amazon Redshift Serverless
  ───────────▶│ 2. send prompt to the agent ─────┼──▶  (agent role: one workgroup,
              │ 3. read sys_query_history         │      one bucket, nothing else)
@@ -43,24 +43,24 @@ Each attempt runs in its own working folder. The agent gets a short preamble (wo
 Requirements: Python 3.10+, AWS CLI v2, an AWS account where you can create IAM roles, and a coding agent CLI (Claude Code or Kiro CLI).
 
 ```bash
-git clone https://github.com/geodelab/aws-data-agent-bench && cd aws-data-agent-bench
+git clone https://github.com/geodelab/data-agent-gauntlet && cd data-agent-gauntlet
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
 
-adab validate                                  # offline: checks the task files
-adab setup --region us-east-1 --profile admin  # ~10 min: stack, sample data, adab.yaml
+dagt validate                                  # offline: checks the task files
+dagt setup --region us-east-1 --profile admin  # ~10 min: stack, sample data, adab.yaml
 # add the printed [profile adab-agent] block to ~/.aws/config
-adab doctor                                    # credentials, warehouse, agent CLI
+dagt doctor                                    # credentials, warehouse, agent CLI
 ```
 
 Run both arms into one result set:
 
 ```bash
-adab run --arm baseline --run-id main          # agent WITHOUT the plugin installed
+dagt run --arm baseline --run-id main          # agent WITHOUT the plugin installed
 # install the plugin, e.g. in Claude Code: /plugin install aws-data-analytics@claude-plugins-official
-adab run --arm skills --run-id main            # same tasks WITH the plugin
-adab report results/main                       # writes summary.md and attempts.csv
-adab teardown --profile admin                  # delete everything
+dagt run --arm skills --run-id main            # same tasks WITH the plugin
+dagt report results/main                       # writes summary.md and attempts.csv
+dagt teardown --profile admin                  # delete everything
 ```
 
 See [docs/running-the-benchmark.md](docs/running-the-benchmark.md) for the full guide, including Kiro, repeats and cost control.
@@ -79,11 +79,11 @@ Adding a task is one YAML file. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Cost and safety
 
-- **Compute:** Redshift Serverless bills only while queries run. `adab setup` sets a daily usage limit (default 20 RPU-hours) after which the workgroup stops accepting queries.
+- **Compute:** Redshift Serverless bills only while queries run. `dagt setup` sets a daily usage limit (default 20 RPU-hours) after which the workgroup stops accepting queries.
 - **Agent permissions:** the agent assumes `AgentRole`, which can run SQL on the benchmark workgroup, read the public sample bucket and use the benchmark output bucket. Nothing else.
 - **Harness permissions:** the harness uses the namespace admin secret to reset the sandbox schema and read `sys_query_history`. It only executes the agent's `answer.sql` if it is a single read-only `SELECT`.
 - **Unattended agents:** agents run with tool approval turned off. Use a sandbox AWS account.
-- **Cleanup:** `adab teardown` deletes the stack, data, bucket and roles. S3 output also expires after 7 days.
+- **Cleanup:** `dagt teardown` deletes the stack, data, bucket and roles. S3 output also expires after 7 days.
 
 Agent usage (model tokens) is billed by your agent provider and is not covered by the AWS cost above.
 

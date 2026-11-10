@@ -10,13 +10,13 @@ This guide takes you from an empty AWS account to a published scorecard. Plan on
 
 ```bash
 pip install -e ".[dev]"
-adab validate
+dagt validate
 ```
 
 ## 2. Create the sandbox
 
 ```bash
-adab setup --region us-east-1 --profile admin --daily-rpu-hours 20
+dagt setup --region us-east-1 --profile admin --daily-rpu-hours 20
 ```
 
 This deploys `infra/adab-stack.yaml`, which takes about 5–10 minutes:
@@ -38,7 +38,7 @@ region = us-east-1
 Then run:
 
 ```bash
-adab doctor
+dagt doctor
 ```
 
 ## 3. Configure the arms
@@ -74,7 +74,7 @@ arms:
 **Baseline: the plugin must not be installed.**
 
 ```bash
-adab run --arm baseline --run-id main --repeat 3
+dagt run --arm baseline --run-id main --repeat 3
 ```
 
 **Skills: install the plugin, then run the same tasks.**
@@ -85,7 +85,7 @@ claude
 /plugin install aws-data-analytics@claude-plugins-official
 /reload-plugins
 # exit, then:
-adab run --arm skills --run-id main --repeat 3
+dagt run --arm skills --run-id main --repeat 3
 ```
 
 For Kiro, follow the Kiro section of the Agent Toolkit README (`npx skills add aws/agent-toolkit-for-aws/skills` plus the AWS MCP Server entry).
@@ -103,7 +103,7 @@ results/main/<arm>/<task>/attempt-N/
 ## 5. Report
 
 ```bash
-adab report results/main
+dagt report results/main
 ```
 
 This writes `results/main/summary.md` (headline table, categories, PostgreSQL habits, per task) and `attempts.csv`.
@@ -111,7 +111,7 @@ This writes `results/main/summary.md` (headline table, categories, PostgreSQL ha
 ## 6. Tear down
 
 ```bash
-adab teardown --profile admin
+dagt teardown --profile admin
 ```
 
 ## Good practice for publishing numbers

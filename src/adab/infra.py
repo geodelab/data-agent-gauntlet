@@ -59,7 +59,7 @@ def deploy_stack(session, stack_name: str, prefix: str, base_capacity: int, trus
     else:
         log(f"Creating stack {stack_name} (Redshift Serverless takes about 5–10 minutes)…")
         cfn.create_stack(StackName=stack_name, TemplateBody=body, Parameters=params,
-                         Capabilities=["CAPABILITY_IAM"], Tags=[{"Key": "project", "Value": "aws-data-agent-bench"}])
+                         Capabilities=["CAPABILITY_IAM"], Tags=[{"Key": "project", "Value": "data-agent-gauntlet"}])
         cfn.get_waiter("stack_create_complete").wait(StackName=stack_name,
                                                      WaiterConfig={"Delay": 20, "MaxAttempts": 90})
     return _outputs(cfn, stack_name)

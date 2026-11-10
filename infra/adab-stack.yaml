@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >-
-  aws-data-agent-bench sandbox: an Amazon Redshift Serverless workgroup, a private S3
+  data-agent-gauntlet sandbox: an Amazon Redshift Serverless workgroup, a private S3
   bucket for UNLOAD output, and a narrowly scoped IAM role the AI agent assumes.
   Delete this stack (adab teardown) to remove everything.
 

@@ -56,7 +56,7 @@ def summarize(records: list[dict]) -> dict:
 def render_markdown(records: list[dict], run_meta: dict | None = None) -> str:
     s = summarize(records)
     arm_names = list(s["arms"])
-    lines = ["# aws-data-agent-bench results", ""]
+    lines = ["# data-agent-gauntlet results", ""]
     if run_meta:
         lines += [f"Run `{run_meta.get('run_id', '')}` · region `{run_meta.get('region', '')}` · "
                   f"{len(run_meta.get('tasks', []))} tasks · {run_meta.get('repeat', 1)} attempt(s) per task", ""]

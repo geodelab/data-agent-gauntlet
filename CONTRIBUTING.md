@@ -20,10 +20,10 @@ Thanks for helping make AI agents better at data work on AWS.
 | `s3_objects` | The task produces files in S3 |
 
 5. Use `setup_sql` to create task-specific tables in `bench_work`. The sandbox is dropped and recreated before every attempt. Placeholders available: `{region}`, `{workgroup}`, `{database}`, `{s3_output}`.
-6. Run `adab validate` and `pytest`, then run your task once for real:
+6. Run `dagt validate` and `pytest`, then run your task once for real:
 
 ```bash
-adab run --task <your-task-id> --arm baseline
+dagt run --task <your-task-id> --arm baseline
 ```
 
 ## Add a trap

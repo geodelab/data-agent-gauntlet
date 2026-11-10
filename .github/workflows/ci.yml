@@ -9,6 +9,6 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -e ".[dev]"
-      - run: adab validate
+      - run: dagt validate
       - run: pytest -q
       - run: cfn-lint infra/adab-stack.yaml

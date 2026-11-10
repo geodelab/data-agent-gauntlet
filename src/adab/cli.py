@@ -1,4 +1,4 @@
-"""Command line interface: adab setup | doctor | run | report | teardown | validate."""
+"""Command line interface: dagt setup | doctor | run | report | teardown | validate."""
 
 from __future__ import annotations
 
@@ -60,7 +60,7 @@ def cmd_setup(args) -> int:
     print(f"role_arn = {outputs['AgentRoleArn']}")
     print(f"source_profile = {args.profile or 'default'}")
     print(f"region = {args.region}\n")
-    print("Then run: adab doctor")
+    print("Then run: dagt doctor")
     return 0
 
 
@@ -143,8 +143,8 @@ def cmd_teardown(args) -> int:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="adab", description="Benchmark AI coding agents on real AWS data tasks.")
-    p.add_argument("--version", action="version", version=f"adab {__version__}")
+    p = argparse.ArgumentParser(prog="dagt", description="data-agent-gauntlet: run AI coding agents through real data platform tasks.")
+    p.add_argument("--version", action="version", version=f"dagt {__version__}")
     sub = p.add_subparsers(dest="cmd", required=True)
 
     v = sub.add_parser("validate", help="Check task files (no AWS access needed).")
