@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "data-agent-gauntlet"
-version = "0.1.0"
+version = "0.1.1"
 description = "An open benchmark for AI coding agents doing real data work on AWS: Amazon Redshift first, with and without agent skills."
 readme = "README.md"
 license = { text = "Apache-2.0" }

@@ -12,7 +12,7 @@ AI coding agents such as Claude Code, Kiro, Codex and Cursor now write SQL, desi
 - **It measures the mistakes.** The harness reads `sys_query_history` and records every statement the agent sent: how many failed, and which PostgreSQL habits showed up (`string_agg`, `CREATE INDEX`, `SERIAL`, `stl_` views on Serverless…).
 - **Safe by default.** A disposable sandbox stack, an agent IAM role scoped to one workgroup and one bucket, a daily compute cap, and a one-command teardown.
 
-> Status: Day 1 (v0.1). Today: Amazon Redshift Serverless, the harness, tasks and checks (tested offline with `pytest`). Planned, not built: more agents and platforms, cost and token reporting, and a ranked verdict per agent and job. Numbers you publish should come from your own runs. Please share them.
+> Status: Day 1 (v0.1.1). Today: Amazon Redshift Serverless, the harness, tasks and checks (tested offline with `pytest`). Planned, not built: more agents and platforms, cost and token reporting, and a ranked verdict per agent and job. Numbers you publish should come from your own runs. Please share them.
 
 ## How it works
 
